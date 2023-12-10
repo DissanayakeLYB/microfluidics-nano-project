@@ -6,6 +6,24 @@ var_04 = 0
 var_05 = 0
 var_06 = 0
 
+#function to calculate thickness of the diffusion layer (kappa inverse)
+#nI = the electrolyte number concentration
+#k_b = boltzman constant
+#temp = temperature in Kelvin 
+#e = charge of an electron
+#epsilon = dielectric constant
+def kappa(nI, k_b, temp, e, epsilon):
+    return ((2*nI*(e**2))/(epsilon*k_b*temp))**0.5
+
+
+#function to calculate time average Dielectrophoresis forces (F_DEP)
+#Real Part of the Clausius Mossotti (CM) factor (Re[K(W)])
+#E_rms = rms value of electric field
+#K(w) = CM factor which determines the extent of the polarization
+def F_DEP():
+
+
+
 #epsilon p effective
 def epsilonStarPEff(epsilonStarL, r2, r1, epsilonStarP):
     f1 = (r2/r1)**2
