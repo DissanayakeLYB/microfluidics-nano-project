@@ -1,10 +1,7 @@
+import math
+
 #the values which must be given as inputs
-var_01 = 0
-var_02 = 0
-var_03 = 0
-var_04 = 0
-var_05 = 0
-var_06 = 0
+pi = math.pi
 
 #function to calculate thickness of the diffusion layer (kappa inverse)
 #nI = the electrolyte number concentration
@@ -16,18 +13,31 @@ def kappa(nI, k_b, temp, e, epsilon):
     return ((2*nI*(e**2))/(epsilon*k_b*temp))**0.5
 
 
+#function to calculate CM factor k_w
+#epsilonStarP = complex permitivity of particle
+#epsilonStarM = conplex permitivty of medium
+def k_w(epsilonStarM, epsilonStarP):
+    return (epsilonStarP - epsilonStarM)/(epsilonStarP + 2 * epsilonStarM)
+
+
 #function to calculate time average Dielectrophoresis forces (F_DEP)
-#Real Part of the Clausius Mossotti (CM) factor (Re[K(W)])
+#Real Part of the Clausius Mossotti (CM) factor (Re_k_w)
 #E_rms = rms value of electric field
 #K(w) = CM factor which determines the extent of the polarization
-def F_DEP():
+def F_DEP(pi, epsilonM, a, Re_k_w, E_rms):
+    return 2*pi*epsilonM*(a**3)*Re_k_w*(E_rms**2)
 
+
+#function to calculate epsilonStar
+def epsilonStar(epsilon,sigma, j, w):
+    return epsilon-j*(sigma/w)
 
 
 #epsilon p effective
-def epsilonStarPEff(epsilonStarL, r2, r1, epsilonStarP):
+def epsilonStarPEff(r2, r1, epsilonStarL, k_w):
     f1 = (r2/r1)**2
-    f2 = (epsilonStarP - epsilonStarL)/(epsilonStarP + 2*epsilonStarL)
+    f2 = k_w
+    return epsilonStarL*((f1 + 2*f2)/(f1 - f2))
 
 
 #r2 = radius of particle + EDL
@@ -45,6 +55,11 @@ def chargeDensity(r1, phiNote, epsilon, K):
     return ((phiNote * epsilon * (1 + K * r1)) / r1)
     
 
+#function to calculate epsilonL
+def epsilonL(sigmaStar,phiNote,kappa):
+    return sigmaStar/(phiNote*kappa)
+
+
 #conductivity of the particle
 #sigmaPCore = conductivity of core particle
 def sigmaP(sigmaPcore, K_s, r2):
@@ -58,6 +73,3 @@ def genSurfaceConductance(sigmaStar,miuI):
     return sigmaStar * miuI
 
 
-
-sigma_p = sigmaP(var_01,var_02,var_03)
-K_s = genSurfaceConductance(var_01,var_02,var_03)
