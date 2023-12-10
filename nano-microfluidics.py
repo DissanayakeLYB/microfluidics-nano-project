@@ -6,24 +6,36 @@ var_04 = 0
 var_05 = 0
 var_06 = 0
 
+#epsilon p effective
+def epsilonStarPEff(epsilonStarL, r2, r1, epsilonStarP):
+    f1 = (r2/r1)**2
+    f2 = (epsilonStarP - epsilonStarL)/(epsilonStarP + 2*epsilonStarL)
 
-#function to calculate the general Surface Conductance (Ks)
-#sigmaStar = product of charge density
-#miuI = ion mobility
 
-def genSurfaceConductance(sigmaStar,miuI):
-    return sigmaStar * miuI
-    
-#radii required of an particle
-r1 = 0
-delta = 0
+#r2 = radius of particle + EDL
+r1 = 0  #radius of the particle
+delta = 0 #thickness of the double layers
 r2 = r1 + delta
 
-def sigmaP(sigmaPcore,K_s,r2):
-    return sigmaPcore * (K_s/r2)
+
+#function to calculate the charge density (sigma star)
+#sigmaStar = charge density
+#phiNote = surface potential
+#epsilon = permitivity of the free space / dielectric constant
+#K = CM factor
+def chargeDensity(r1, phiNote, epsilon, K):
+    return ((phiNote * epsilon * (1 + K * r1)) / r1)
+    
+
+#conductivity of the particle
+#sigmaPCore = conductivity of core particle
+def sigmaP(sigmaPcore, K_s, r2):
+    return sigmaPcore * ((2 * K_s) / r2)
+
 
 #function to calculate the general Surface Conductance (Ks)
-#sigmaPCore = conductivity of core particle
+#sigmaStar = charge density
+#miuI = ion mobility
 def genSurfaceConductance(sigmaStar,miuI):
     return sigmaStar * miuI
 
@@ -31,6 +43,3 @@ def genSurfaceConductance(sigmaStar,miuI):
 
 sigma_p = sigmaP(var_01,var_02,var_03)
 K_s = genSurfaceConductance(var_01,var_02,var_03)
-
-print(f"Required length of the microfluidic channel : {req_channel_length}")
-print(f"Required electric field for the microfluidic channel : {req_electric_field}")
