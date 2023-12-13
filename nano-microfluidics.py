@@ -3,6 +3,19 @@ import math
 #the values which must be given as inputs
 pi = math.pi
 
+
+#function to calculate thickness of EDL + particle radius
+#U_p = particle velocity
+#U = fluid velocity
+#miu = dynamic velocity of the fluid
+#epsilon_m = permitivity of the medium
+#Real Part of the Clausius Mossotti (CM) factor (Re_k_w)
+#E_rms = electric field
+
+def doubleLayerThickness(U_p, U, miu, epsilon_m, Re_k_w, E_rms):
+    return (((U_p - U) * 3 * miu)/(epsilon_m * Re_k_w * E_rms))**0.5
+
+
 #function to calculate thickness of the diffusion layer (kappa inverse)
 #nI = the electrolyte number concentration
 #k_b = boltzman constant
@@ -20,11 +33,11 @@ def k_w(epsilonStarM, epsilonStarP):
     return (epsilonStarP - epsilonStarM)/(epsilonStarP + 2 * epsilonStarM)
 
 
-#function to calculate time average Dielectrophoresis forces (F_DEP)
+#function to calculate time average by Dielectrophoresis forces (F_DEP)
 #Real Part of the Clausius Mossotti (CM) factor (Re_k_w)
 #E_rms = rms value of electric field
 #K(w) = CM factor which determines the extent of the polarization
-def F_DEP(pi, epsilonM, a, Re_k_w, E_rms):
+def timeByF_DEP(pi, epsilonM, a, Re_k_w, E_rms):
     return 2*pi*epsilonM*(a**3)*Re_k_w*(E_rms**2)
 
 
@@ -33,7 +46,7 @@ def epsilonStar(epsilon,sigma, j, w):
     return epsilon-j*(sigma/w)
 
 
-#epsilon p effective
+#epsilon p effective (particle effective)
 def epsilonStarPEff(r2, r1, epsilonStarL, k_w):
     f1 = (r2/r1)**2
     f2 = k_w
@@ -63,7 +76,7 @@ def epsilonL(sigmaStar,phiNote,kappa):
 #conductivity of the particle
 #sigmaPCore = conductivity of core particle
 def sigmaP(sigmaPcore, K_s, r2):
-    return sigmaPcore * ((2 * K_s) / r2)
+    return sigmaPcore + ((2 * K_s) / r2)
 
 
 #function to calculate the general Surface Conductance (Ks)
