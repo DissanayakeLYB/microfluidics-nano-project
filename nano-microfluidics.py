@@ -86,3 +86,17 @@ def genSurfaceConductance(sigmaStar,miuI):
     return sigmaStar * miuI
 
 
+
+
+#graphical representation
+import matplotlib.pyplot as plt
+
+x = [1,2,3,4,5]
+y = [2,4,2,5,8]
+
+plt.scatter(x,y)
+plt.xlabel("Particle number")
+plt.ylabel("Particle Size")
+plt.title("x Vs. y")
+plt.
+plt.show()
