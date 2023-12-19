@@ -90,13 +90,20 @@ def genSurfaceConductance(sigmaStar,miuI):
 
 #graphical representation
 import matplotlib.pyplot as plt
+import numpy as np
 
-x = [1,2,3,4,5]
-y = [2,4,2,5,8]
+x = [1,2,3,4,5,6,7,8,9,10]
+y = [2,4,2,5,4,3,6,8,6,17]
+
+mymodel = np.poly1d(np.polyfit(x, y, 3))
+
+myline = np.linspace(1, 10, 100)
 
 plt.scatter(x,y)
 plt.xlabel("Particle number")
 plt.ylabel("Particle Size")
 plt.title("x Vs. y")
-plt.
+
+plt.plot(myline, mymodel(myline))
+
 plt.show()
