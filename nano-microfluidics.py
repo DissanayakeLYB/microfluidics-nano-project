@@ -23,6 +23,14 @@ zeta_30 = -33.6
 
 miuI = 6.54*(10**(-8))
 
+#r2 = radius of particle + EDL
+r1 = 0  #radius of the particle
+delta = 0 #thickness of the double layers
+r2 = r1 + delta
+
+
+
+
 #function to calculate thickness of the diffusion layer (kappa inverse)
 #nI = the electrolyte number concentration
 #k_b = boltzman constant
@@ -92,59 +100,64 @@ def timeByF_DEP(pi, epsilonM, a, Re_k_w, E_rms):
 #ν = velocity
 #dia = diameter of the particle
 #vis = viscosity
-def Rey_num(den, v, dia, vis)
+def Rey_num(den, v, dia, vis):
+    return (den*v*dia)/vis
 
 
+#assuming F_DEP = -F_drag (neglcting Brownian motion and buoyancy) = dielectrophoretic force acting on them during movement
+#vis = viscosity
+#r2 = radius of particle + EDL 
+#v = velocity
+def F_DEP(vis,r2,v):
+    return 6*pi*vis*r2*v
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#function to calculate thickness of EDL + particle radius
-#U_p = particle velocity
-#U = fluid velocity
-#miu = dynamic velocity of the fluid
-#epsilon_m = permitivity of the medium
-#Real Part of the Clausius Mossotti (CM) factor (Re_k_w)
-#E_rms = electric field
-def doubleLayerThickness(U_p, U, miu, epsilonM, Re_k_w, E_rms):
-    return (((U_p - U) * 3 * miu)/(epsilonM * Re_k_w * E_rms))**0.5
-
-
-
-
-
-
-
-
-
-
-
+#miuDEP = DEP mobility into direction of the electric field 
 #r2 = radius of particle + EDL
-r1 = 0  #radius of the particle
-delta = 0 #thickness of the double layers
-r2 = r1 + delta
+#epsilon_m = permitivity of the medium
+#Re_k_w = Real Part of the Clausius Mossotti (CM) factor 
+def miuDEP(r2,epsilon_m,Re_k_w,vis):
+    return ((r2**2)*epsilon_m*Re_k_w)/2*vis
+
+
+#v_particle = velocity of the particle 
+#F_DEP = dielectrophoretic force acting on them during movement
+#epsilon_m = permitivity of the medium
+#Re_k_w = Real Part of the Clausius Mossotti (CM) factor 
+def v_particle(r2,epsilon_m,Re_k_w,vis):
+    return ((r2**2)*epsilon_m*Re_k_w)/2*vis
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -181,3 +194,30 @@ plt.plot(myline, mymodel(myline))
 
 plt.show()
 """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""#function to calculate thickness of EDL + particle radius
+#U_p = particle velocity
+#U = fluid velocity
+#miu = dynamic velocity of the fluid
+#epsilon_m = permitivity of the medium
+#Real Part of the Clausius Mossotti (CM) factor (Re_k_w)
+#E_rms = electric field
+def doubleLayerThickness(U_p, U, miu, epsilonM, Re_k_w, E_rms):
+    return (((U_p - U) * 3 * miu)/(epsilonM * Re_k_w * E_rms))**0.5"""
