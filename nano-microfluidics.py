@@ -105,13 +105,12 @@ def epsilonStarPEff(r2, r1, epsilonStarL, k_w):
     f2 = k_w
     return epsilonStarL*((f1 + 2*f2)/(f1 - f2))
 
-#function to calculate thickness of EDL + particle radius
-#U_p = particle velocity
-#U = fluid velocity
-#miu = dynamic velocity of the fluid
+
+#slip velocity = velocity difference between fluid and a particle
+#miu = mobility
 #epsilon_m = permitivity of the medium
-#Real Part of the Clausius Mossotti (CM) factor (Re_k_w)
-#E_rms = electric field
+#Re_k_w = Real Part of the Clausius Mossotti (CM) factor 
+#E_rms = rms value of electric field
 def slip_velocity(r2, miu, epsilon_m, Re_k_w, E_rms):
     return (((r2**2) * epsilon_m * Re_k_w * (E_rms**2))/( 3 * miu))**0.5
 
@@ -135,12 +134,9 @@ def miuDEP(r2,epsilon_m,Re_k_w,vis):
 
 #v_particle = velocity of the particle 
 #r2 = radius of particle + EDL
-#epsilon_m = permitivity of the medium
-#Re_k_w = Real Part of the Clausius Mossotti (CM) factor 
-#E_rms = rms value of electric field
 #v_fluid = velocity of the fluid
-def v_particle(r2,epsilon_m,Re_k_w,vis,E_rms,v_fluid):
-    return (((r2**2)*epsilon_m*Re_k_w*(E_rms**2))/3*vis)+(v_fluid)
+def v_particle(slip_velocity,v_fluid):
+    return slip_velocity + v_fluid
 
 
 
@@ -166,7 +162,8 @@ sigmaPcore = sigmaL_60
 conduct_particle = sigmaP(sigmaPcore, K_s, r2)
 
 epsilonL = epsilonL_60 
-w = 10**6 #changeable from 10^2 to 10^10
+f = 10**7
+w = 2*pi*f #changeable from 10^2 to 10^10
 epsilonStarL = epsilonStar(epsilonL_60,sigmaL_60, w)
 
 epsilonStarP = epsilonStar(epsilonL_60,sigmaL_60, w)
@@ -178,23 +175,24 @@ effective_conductivity = epsilonStarPEff(r2, r1, epsilonStarL, k_w)
 
 
 Re_k_w = k_w.real
-vis = 8.9*(10**(-4))
+vis = 8.9*(10**(-4)) #deionized water
 
-print(miuDEP(r2, epsilon_m, Re_k_w, vis))
+mobility_DEP = miuDEP(r2, epsilon_m, Re_k_w, vis)
 
-#E_rms = 
-#v = slip_velocity(r2, vis, epsilon_m, Re_k_w, E_rms)
+E = 195 #E = applied voltage (vary between a range)
+E_rms = E/(2**0.5)
+v = slip_velocity(r2, vis, epsilon_m, Re_k_w, E_rms)
 
+DEP_force = F_DEP(vis, r2, v)
 
-#DEP_force = F_DEP(vis, r2, v)
-
-#v_fluid = 
-#par_velo = v_particle(r2, epsilon_m, Re_k_w, vis, E_rms, v_fluid)
+v_fluid = 
+par_velo = v_particle(slip_velocity,v_fluid)
 
 #-------------------------------------------------------------------------------
 
 
-"""#graphical representation
+"""
+#graphical representation
 import matplotlib.pyplot as plt
 import numpy as np
 
