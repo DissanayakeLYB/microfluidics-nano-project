@@ -178,22 +178,23 @@ effective_conductivity = epsilonStarPEff(r2, r1, epsilonStarL, k_w)
 
 
 Re_k_w = k_w.real
-vis = [1,2,3,4,5,6,7,8]
+vis = 8.9*(10**(-4))
+
 print(miuDEP(r2, epsilon_m, Re_k_w, vis))
 
-E_rms = 
-v = slip_velocity(r2, vis, epsilon_m, Re_k_w, E_rms)
+#E_rms = 
+#v = slip_velocity(r2, vis, epsilon_m, Re_k_w, E_rms)
 
 
-DEP_force = F_DEP(vis, r2, v)
+#DEP_force = F_DEP(vis, r2, v)
 
-v_fluid = 
-par_velo = v_particle(r2, epsilon_m, Re_k_w, vis, E_rms, v_fluid)
+#v_fluid = 
+#par_velo = v_particle(r2, epsilon_m, Re_k_w, vis, E_rms, v_fluid)
 
 #-------------------------------------------------------------------------------
 
-"""
-#graphical representation
+
+"""#graphical representation
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -212,8 +213,8 @@ plt.title("x Vs. y")
 plt.plot(myline, mymodel(myline))
 
 plt.show()
-
 """
+
 
 
 
