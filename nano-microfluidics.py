@@ -28,8 +28,8 @@ k_b = 1.3806*(10**(-23)) #boltzman constant
 e = 1.602*(10**(-19)) #charge of an electron
 
 #r2 = radius of particle + EDL
-r1 = 60  #radius of the core particle
-delta = 3.995 #thickness of the double layers
+r1 = 60*(10**(-9))  #radius of the core particle
+delta = 3.995*(10**(-9)) #thickness of the double layers
 r2 = r1 + delta
 
 
@@ -105,14 +105,15 @@ def epsilonStarPEff(r2, r1, epsilonStarL, k_w):
     f2 = k_w
     return epsilonStarL*((f1 + 2*f2)/(f1 - f2))
 
-
-#N_Re = Reynolds number 
-#den = density
-#ν = velocity
-#dia = diameter of the particle
-#vis = viscosity
-def Rey_num(den, v, dia, vis):
-    return (den*v*dia)/vis
+#function to calculate thickness of EDL + particle radius
+#U_p = particle velocity
+#U = fluid velocity
+#miu = dynamic velocity of the fluid
+#epsilon_m = permitivity of the medium
+#Real Part of the Clausius Mossotti (CM) factor (Re_k_w)
+#E_rms = electric field
+def slip_velocity(r2, miu, epsilon_m, Re_k_w, E_rms):
+    return (((r2**2) * epsilon_m * Re_k_w * (E_rms**2))/( 3 * miu))**0.5
 
 
 #assuming F_DEP = -F_drag (neglcting Brownian motion and buoyancy) = dielectrophoretic force acting on them during movement
@@ -173,9 +174,21 @@ epsilonStarM = epsilonStar(epsilon_m,sigma_m, w)
 k_w = k_w(epsilonStarM, epsilonStarP)
 
 #effective permittivity for the equivalent particle
-print(epsilonStarPEff(r2, r1, epsilonStarL, k_w))
+effective_conductivity = epsilonStarPEff(r2, r1, epsilonStarL, k_w)
 
 
+Re_k_w = k_w.real
+vis = [1,2,3,4,5,6,7,8]
+print(miuDEP(r2, epsilon_m, Re_k_w, vis))
+
+E_rms = 
+v = slip_velocity(r2, vis, epsilon_m, Re_k_w, E_rms)
+
+
+DEP_force = F_DEP(vis, r2, v)
+
+v_fluid = 
+par_velo = v_particle(r2, epsilon_m, Re_k_w, vis, E_rms, v_fluid)
 
 #-------------------------------------------------------------------------------
 
@@ -218,15 +231,7 @@ plt.show()
 
 
 
-"""#function to calculate thickness of EDL + particle radius
-#U_p = particle velocity
-#U = fluid velocity
-#miu = dynamic velocity of the fluid
-#epsilon_m = permitivity of the medium
-#Real Part of the Clausius Mossotti (CM) factor (Re_k_w)
-#E_rms = electric field
-def doubleLayerThickness(U_p, U, miu, epsilonM, Re_k_w, E_rms):
-    return (((U_p - U) * 3 * miu)/(epsilonM * Re_k_w * E_rms))**0.5"""
+
 
 
 """#timebyF_DEP = time average Dielectrophoresis forces 
@@ -236,3 +241,16 @@ def doubleLayerThickness(U_p, U, miu, epsilonM, Re_k_w, E_rms):
 #r2 = radius of particle + EDL 
 def timeByF_DEP(pi, epsilon_m, r2, Re_k_w, E_rms):
     return 2*pi*epsilon_m*(r2**3)*Re_k_w*(E_rms**2)"""
+
+
+"""
+#used to predict fluid flow patterns (laminar or turbulent)
+#N_Re = Reynolds number 
+#den = density
+#ν = velocity
+#dia = diameter of the particle
+#vis = viscosity
+def Rey_num(den, v, dia, vis):
+    return (den*v*dia)/vis"""
+
+
