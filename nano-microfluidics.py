@@ -16,7 +16,7 @@ epsilonL_30 = 8.73*(10**(-10))         #for 30nm
 sigmaL_60 = 0.028         #for 60nm
 sigmaL_30 = 0.05         #for 30nm
 
-sigmaM = 5.5*(10**(-6))
+sigma_m = 5.5*(10**(-6))
 
 zeta_60 = -37.6     #for 60nm for pH = 7.3
 zeta_30 = -33.6     #for 30nm for pH = 7.06
@@ -82,23 +82,13 @@ def sigmaP(sigmaPcore, K_s, r2):
     return sigmaPcore + ((2 * K_s) / r2)
 
 
-"""#epsilonStar = complex permittivity 
+#epsilonStar = complex permittivity 
 #epsilon = permittivity
 #sigma = conductivity
 #j = imaginery unit
 #w = angular frequency of the electric field
-def epsilonStar(epsilon,sigma, j, w):
-    return epsilon-j*(sigma/w)
-"""
-
-#epsilonStarPEff = effective permittivity for the equivalent particle 
-#r1 = radius of the core particle
-#r2 = radius of particle + EDL
-def epsilonStarPEff(r2, r1, epsilonStarL, k_w):
-    f1 = (r2/r1)**2
-    f2 = k_w
-    return epsilonStarL*((f1 + 2*f2)/(f1 - f2))
-
+def epsilonStar(epsilon,sigma, w):
+    return complex(epsilon,(sigma/w))
 
 #k_w = CM factor 
 #epsilonStarP = complex permitivity of particle
@@ -107,13 +97,13 @@ def k_w(epsilonStarM, epsilonStarP):
     return (epsilonStarP - epsilonStarM)/(epsilonStarP + 2 * epsilonStarM)
 
 
-#timebyF_DEP = function to calculate time average by Dielectrophoresis forces 
-#Re_k_w = Real Part of the Clausius Mossotti (CM) factor 
-#E_rms = rms value of electric field
-#epsilon_m = permittivity of the medium
-#r2 = radius of particle + EDL 
-def timeByF_DEP(pi, epsilon_m, r2, Re_k_w, E_rms):
-    return 2*pi*epsilon_m*(r2**3)*Re_k_w*(E_rms**2)
+#epsilonStarPEff = effective permittivity for the equivalent particle 
+#r1 = radius of the core particle
+#r2 = radius of particle + EDL
+def epsilonStarPEff(r2, r1, epsilonStarL, k_w):
+    f1 = (r2/r1)**2
+    f2 = k_w
+    return epsilonStarL*((f1 + 2*f2)/(f1 - f2))
 
 
 #N_Re = Reynolds number 
@@ -174,9 +164,18 @@ K_s = genSurfaceConductance(sigmaStar,miuI)
 sigmaPcore = sigmaL_60
 conduct_particle = sigmaP(sigmaPcore, K_s, r2)
 
-epsilonStarL = 
+epsilonL = epsilonL_60 
+w = 10**6 #changeable from 10^2 to 10^10
+epsilonStarL = epsilonStar(epsilonL_60,sigmaL_60, w)
+
+epsilonStarP = epsilonStar(epsilonL_60,sigmaL_60, w)
+epsilonStarM = epsilonStar(epsilon_m,sigma_m, w)
+k_w = k_w(epsilonStarM, epsilonStarP)
+
 #effective permittivity for the equivalent particle
 print(epsilonStarPEff(r2, r1, epsilonStarL, k_w))
+
+
 
 #-------------------------------------------------------------------------------
 
@@ -228,3 +227,12 @@ plt.show()
 #E_rms = electric field
 def doubleLayerThickness(U_p, U, miu, epsilonM, Re_k_w, E_rms):
     return (((U_p - U) * 3 * miu)/(epsilonM * Re_k_w * E_rms))**0.5"""
+
+
+"""#timebyF_DEP = time average Dielectrophoresis forces 
+#Re_k_w = Real Part of the Clausius Mossotti (CM) factor 
+#E_rms = rms value of electric field
+#epsilon_m = permittivity of the medium
+#r2 = radius of particle + EDL 
+def timeByF_DEP(pi, epsilon_m, r2, Re_k_w, E_rms):
+    return 2*pi*epsilon_m*(r2**3)*Re_k_w*(E_rms**2)"""
