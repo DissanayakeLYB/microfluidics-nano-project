@@ -29,9 +29,7 @@ delta = 0 #thickness of the double layers
 r2 = r1 + delta
 
 
-
-
-#function to calculate thickness of the diffusion layer (kappa inverse)
+#kappaInverse = function to calculate thickness of the diffusion layer
 #nI = the electrolyte number concentration
 #k_b = boltzman constant
 #temp = temperature in Kelvin 
@@ -41,7 +39,6 @@ def kappaInverse(nI, k_b, temp, e, epsilon):
     return ((epsilon*k_b*temp)/2*nI*(e**2))**0.5
 
 
-#function to calculate the charge density (sigma star)
 #sigmaStar = charge density
 #phiNote = surface potential
 #epsilon = permitivity of the free space / dielectric constant = zeta potential
@@ -50,52 +47,64 @@ def chargeDensity(r1, phiNote, epsilon, K):
     return ((phiNote * epsilon * (1 + K * r1)) / r1)
 
 
-#function to calculate epsilonL
+#epsilonL = permittivity of the layer
+#sigmaStar = charge density
+#phiNote = surface potential
+#kappaInverse = function to calculate thickness of the diffusion layer
 def epsilonL(sigmaStar,phiNote,kappaInverse):
     return (sigmaStar*kappaInverse)/phiNote
 
 
-#function to calculate the general Surface Conductance (Ks)
+#Ks = the general Surface Conductance
 #sigmaStar = charge density
 #miuI = ion mobility
 def genSurfaceConductance(sigmaStar,miuI):
     return sigmaStar * miuI
 
 
-#conductivity of the particle
+#sigmaP = conductivity of the particle 
 #sigmaPCore = conductivity of core particle
+#Ks = function to calculate the general Surface Conductance
+#r2 = radius of particle + EDL
 def sigmaP(sigmaPcore, K_s, r2):
     return sigmaPcore + ((2 * K_s) / r2)
 
 
-#function to calculate epsilonStar
+#epsilonStar = complex permittivity 
+#epsilon = permittivity
+#sigma = conductivity
+#j = imaginery unit
+#w = angular frequency of the electric field
 def epsilonStar(epsilon,sigma, j, w):
     return epsilon-j*(sigma/w)
 
 
-#function to calculate CM factor k_w
-#epsilonStarP = complex permitivity of particle
-#epsilonStarM = conplex permitivty of medium
-def k_w(epsilonStarM, epsilonStarP):
-    return (epsilonStarP - epsilonStarM)/(epsilonStarP + 2 * epsilonStarM)
-
-
-#epsilon p effective (particle effective)
+#epsilonStarPEff = effective permittivity for the equivalent particle 
+#r1 = radius of the particle
+#r2 = radius of particle + EDL
 def epsilonStarPEff(r2, r1, epsilonStarL, k_w):
     f1 = (r2/r1)**2
     f2 = k_w
     return epsilonStarL*((f1 + 2*f2)/(f1 - f2))
 
 
-#function to calculate time average by Dielectrophoresis forces (F_DEP)
-#Real Part of the Clausius Mossotti (CM) factor (Re_k_w)
+#k_w = function to calculate CM factor 
+#epsilonStarP = complex permitivity of particle
+#epsilonStarM = conplex permitivty of medium
+def k_w(epsilonStarM, epsilonStarP):
+    return (epsilonStarP - epsilonStarM)/(epsilonStarP + 2 * epsilonStarM)
+
+
+#timebyF_DEP = function to calculate time average by Dielectrophoresis forces 
+#Re_k_w = Real Part of the Clausius Mossotti (CM) factor 
 #E_rms = rms value of electric field
-#K(w) = CM factor which determines the extent of the polarization
-def timeByF_DEP(pi, epsilonM, a, Re_k_w, E_rms):
-    return 2*pi*epsilonM*(a**3)*Re_k_w*(E_rms**2)
+#epsilonM = permitivty of medium
+#r2 = radius of particle + EDL 
+def timeByF_DEP(pi, epsilonM, r2, Re_k_w, E_rms):
+    return 2*pi*epsilonM*(r2**3)*Re_k_w*(E_rms**2)
 
 
-#Reynolds number (N_Re)
+#N_Re = Reynolds number 
 #den = density
 #ν = velocity
 #dia = diameter of the particle
@@ -116,16 +125,19 @@ def F_DEP(vis,r2,v):
 #r2 = radius of particle + EDL
 #epsilon_m = permitivity of the medium
 #Re_k_w = Real Part of the Clausius Mossotti (CM) factor 
+#vis = viscosity
 def miuDEP(r2,epsilon_m,Re_k_w,vis):
-    return ((r2**2)*epsilon_m*Re_k_w)/2*vis
+    return ((r2**2)*epsilon_m*Re_k_w)/3*vis
 
 
 #v_particle = velocity of the particle 
-#F_DEP = dielectrophoretic force acting on them during movement
+#r2 = radius of particle + EDL
 #epsilon_m = permitivity of the medium
 #Re_k_w = Real Part of the Clausius Mossotti (CM) factor 
-def v_particle(r2,epsilon_m,Re_k_w,vis):
-    return ((r2**2)*epsilon_m*Re_k_w)/2*vis
+#E_rms = rms value of electric field
+#v_fluid = velocity of the fluid
+def v_particle(r2,epsilon_m,Re_k_w,vis,E_rms,v_fluid):
+    return (((r2**2)*epsilon_m*Re_k_w*(E_rms**2))/3*vis)+(v_fluid)
 
 
 
