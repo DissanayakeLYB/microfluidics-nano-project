@@ -224,12 +224,12 @@ print(f"Dielectrophoresis force applied on the particle = {DEP_force} N")
 
 #myline = np.linspace(0, 20, 100)
 
-plt.plot(x,y1)
-plt.plot(x,y2)
-
-plt.xlabel("Frequency (f)")
-plt.ylabel("Real Part of CM factor")
-plt.title("Frequency Vs. Re[K(w)]")
+plt.plot(x,y1, label = "60nm")
+plt.plot(x,y2, label = "30nm")
+plt.legend()
+plt.xlabel("Log Frequency (lg f)")
+plt.ylabel("Re[K(w)]")
+plt.title("lg f Vs. Re[K(w)]")
 
 #plt.plot(myline, mymodel(myline))
 
