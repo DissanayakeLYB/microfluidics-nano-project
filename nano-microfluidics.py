@@ -178,6 +178,7 @@ vis = 8.9*(10**(-4)) #deionized water
 mobility_DEP = miuDEP(r2, epsilon_m, Re_k_w, vis)"""
 
 
+Ks = genSurfaceConductance(sigmaStar,miuI)
 
 x = []
 y1 = []
@@ -191,6 +192,8 @@ for f in np.arange(3,10.02,0.2):
     r2_30 = r1_30 + delta
     epsilonStarL_30 = epsilonStar(epsilonL_30, sigmaL_30, w)
     epsilonStarPEff_30 = epsilonStarPEff(r2_30, r1_30, epsilonStarL_30, epsilonStarL_30)
+    sigmaP_30 = sigmaP(sigmaPcore, K_s, r2)
+
 
     #for 60nm
     r1_60 = 60*(10**(-9)) 
@@ -237,7 +240,7 @@ plt.legend()
 plt.xlabel("Log Frequency (lg f)")
 plt.ylabel("Re[K(w)]")
 plt.title("lg f Vs. Re[K(w)]")
-
+plt.yticks([])
 #plt.plot(myline, mymodel(myline))
 
 plt.show()
