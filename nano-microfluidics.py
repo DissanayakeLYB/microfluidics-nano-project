@@ -132,24 +132,17 @@ def miuDEP(r2,epsilon_m,Re_k_w,vis):
     return ((r2**2)*epsilon_m*Re_k_w)/3*vis
 
 
-#v_particle = velocity of the particle 
-#r2 = radius of particle + EDL
-#v_fluid = velocity of the fluid
-def v_particle(slip_velocity,v_fluid):
-    return slip_velocity + v_fluid
-
-
 
 
 #-------------------------------------------------------------------------------
  
 #trials for 60nm gold particles
-
+particle_size = 60
 temp = 298
 epsilon_m = 6.903*(10**(-10)) #relative permitivity
 kappa_in = kappaInverse(nI, k_b, temp, e, epsilon_m)
 
-phiNote = -37.6
+phiNote = -37.6*(10**(-3)) #zeta potential
 epsilon_m = 6.903*(10**(-10))
 sigmaStar = chargeDensity(r1, phiNote, epsilon_m, kappa_in)
 
@@ -173,73 +166,99 @@ k_w = k_w(epsilonStarM, epsilonStarP)
 #effective permittivity for the equivalent particle
 effective_conductivity = epsilonStarPEff(r2, r1, epsilonStarL, k_w)
 
-
 Re_k_w = k_w.real
+
 vis = 8.9*(10**(-4)) #deionized water
 
 mobility_DEP = miuDEP(r2, epsilon_m, Re_k_w, vis)
 
-E = 195 #E = applied voltage (vary between a range)
-E_rms = E/(2**0.5)
-v = slip_velocity(r2, vis, epsilon_m, Re_k_w, E_rms)
 
-DEP_force = F_DEP(vis, r2, v)
 
-v_fluid = 
-par_velo = v_particle(slip_velocity,v_fluid)
+x = []
+y = []
+for f in range(1,10):
+    freq = 10**f
+    w = 2*pi*freq #changeable from 10^2 to 10^10
+    epsilonStarL = epsilonStar(epsilonL_60, sigmaL_60, w)
+
+    epsilonStarP = epsilonStar(epsilonL_60, sigmaL_60, w)
+    epsilonStarM = epsilonStar(epsilon_m, sigma_m, w)
+    k_w = k_w(epsilonStarM, epsilonStarP)
+
+    #effective permittivity for the equivalent particle
+    effective_conductivity = epsilonStarPEff(r2, r1, epsilonStarL, k_w)
+
+    E = 195 #E = applied voltage (vary between a range of 5 to 200) 
+    #E_rms = E/(2**0.5)
+    Re_k_w = k_w.real
+    E_rms = E/(2**0.5)
+    v = slip_velocity(r2, vis, epsilon_m, Re_k_w, E_rms)
+    DEP_force = F_DEP(vis, r2, v)
+    x.append(f)
+    y.append(DEP_force)
+
+
+print(f"Particle Size = {particle_size} nm")
+print(f"Temperature = {temp} K")
+print(f"Zeta potential = {phiNote} V")
+print(f"Frequency = {f} Hz")      
+print(f"Viscosity of the medium = {vis} PaS")
+print(f"Effective Permittivity = {effective_conductivity} S/m")
+print(f"Applied voltage difference = {E} V")
+print(f"Velocity difference between the particles and the fluid = {v} m/s")
+print(f"Dielectrophoresis force applied on the particle = {DEP_force} N")
 
 #-------------------------------------------------------------------------------
 
 
-"""
+
 #graphical representation
 import matplotlib.pyplot as plt
 import numpy as np
 
-x = []
-y = []
-
 mymodel = np.poly1d(np.polyfit(x, y, 3))
 
-myline = np.linspace(1, 10, 100)
+myline = np.linspace(40, 160, 100)
 
 plt.scatter(x,y)
-plt.xlabel("x coordinates")
-plt.ylabel("y coordinates")
-plt.title("x Vs. y")
+plt.xlabel("Frequency (f)")
+plt.ylabel("DEP Force (N)")
+plt.title("Applied Voltage Vs. DEP Force")
 
 plt.plot(myline, mymodel(myline))
 
 plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 """
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""#timebyF_DEP = time average Dielectrophoresis forces 
+#timebyF_DEP = time average Dielectrophoresis forces 
 #Re_k_w = Real Part of the Clausius Mossotti (CM) factor 
 #E_rms = rms value of electric field
 #epsilon_m = permittivity of the medium
 #r2 = radius of particle + EDL 
 def timeByF_DEP(pi, epsilon_m, r2, Re_k_w, E_rms):
-    return 2*pi*epsilon_m*(r2**3)*Re_k_w*(E_rms**2)"""
+    return 2*pi*epsilon_m*(r2**3)*Re_k_w*(E_rms**2)
+"""
 
 
 """
@@ -250,6 +269,14 @@ def timeByF_DEP(pi, epsilon_m, r2, Re_k_w, E_rms):
 #dia = diameter of the particle
 #vis = viscosity
 def Rey_num(den, v, dia, vis):
-    return (den*v*dia)/vis"""
+    return (den*v*dia)/vis
+"""
 
 
+"""
+#v_particle = velocity of the particle 
+#r2 = radius of particle + EDL
+#v_fluid = velocity of the fluid
+def v_particle(slip_velocity,v_fluid):
+    return slip_velocity + v_fluid
+"""
