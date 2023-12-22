@@ -12,11 +12,13 @@ kappa = 3.995*(10**(-3)) #nm
 
 epsilonM = 6.903*(10**(-10))
 
-epsilonL_60 = 7.82*(10**(-10))         #for 60nm
-epsilonL_30 = 8.73*(10**(-10))         #for 30nm
-
-sigmaL_60 = 0.028         #for 60nm
-sigmaL_30 = 0.05         #for 30nm
+#for 60nm
+epsilonL_60 = 7.82*(10**(-10))         
+sigmaL_60 = 0.028         
+ 
+#for 30nm
+epsilonL_30 = 8.73*(10**(-10))        
+sigmaL_30 = 0.05         
 
 sigma_m = 5.5*(10**(-6))
 
@@ -29,9 +31,10 @@ k_b = 1.3806*(10**(-23)) #boltzman constant
 
 e = 1.602*(10**(-19)) #charge of an electron
 
+delta = 3.995*(10**(-9)) #thickness of the double layers
+
 #r2 = radius of particle + EDL
 r1 = 60*(10**(-9))  #radius of the core particle
-delta = 3.995*(10**(-9)) #thickness of the double layers
 r2 = r1 + delta
 
 
@@ -102,9 +105,9 @@ def k_w(epsilonStarM, epsilonStarP):
 #epsilonStarPEff = effective permittivity for the equivalent particle 
 #r1 = radius of the core particle
 #r2 = radius of particle + EDL
-def epsilonStarPEff(r2, r1, epsilonStarL, k_w):
-    f1 = (r2/r1)**2
-    f2 = k_w
+def epsilonStarPEff(r2, r1, epsilonStarL, epsilonStarP):
+    f1 = (r2/r1)**3
+    f2 = (epsilonStarP - epsilonStarL)/(epsilonStarP + 2 * epsilonStarL)
     return epsilonStarL*((f1 + 2*f2)/(f1 - f2))
 
 
@@ -179,22 +182,26 @@ mobility_DEP = miuDEP(r2, epsilon_m, Re_k_w, vis)"""
 x = []
 y1 = []
 y2 = []
-for f in np.arange(0,20,0.2):
+for f in np.arange(3,10.02,0.2):
     freq = 10**f
-    w = 2*pi*freq #changeable from 10^2 to 10^10
+    w = 2*pi*freq #changeable from 10^3 to 10^10
 
     #for 30nm
+    r1_30 = 30*(10**(-9)) 
+    r2_30 = r1_30 + delta
     epsilonStarL_30 = epsilonStar(epsilonL_30, sigmaL_30, w)
-    epsilonStarP_30 = epsilonStar(epsilonL_30, sigmaL_30, w)
+    epsilonStarPEff_30 = epsilonStarPEff(r2_30, r1_30, epsilonStarL_30, epsilonStarL_30)
 
     #for 60nm
+    r1_60 = 60*(10**(-9)) 
+    r2_60 = r1_60 + delta
     epsilonStarL_60 = epsilonStar(epsilonL_60, sigmaL_60, w)
-    epsilonStarP_60 = epsilonStar(epsilonL_60, sigmaL_60, w)
+    epsilonStarPEff_60 = epsilonStarPEff(r2_60, r1_60, epsilonStarL_60, epsilonStarL_60)
 
     epsilonStarM = epsilonStar(epsilon_m, sigma_m, w)
 
-    kw_30 = k_w(epsilonStarM, epsilonStarP_30)
-    kw_60 = k_w(epsilonStarM, epsilonStarP_60)
+    kw_30 = k_w(epsilonStarM, epsilonStarPEff_30)
+    kw_60 = k_w(epsilonStarM, epsilonStarPEff_60)
 
     Re_k_w_30 = kw_30.real
     Re_k_w_60 = kw_60.real
@@ -286,3 +293,4 @@ def Rey_num(den, v, dia, vis):
 def v_particle(slip_velocity,v_fluid):
     return slip_velocity + v_fluid
 """
+
