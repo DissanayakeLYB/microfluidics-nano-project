@@ -1,4 +1,6 @@
 import math
+import matplotlib.pyplot as plt
+import numpy as np
 
 #the values which must be given as inputs
 pi = math.pi
@@ -155,49 +157,53 @@ sigmaPcore = sigmaL_60
 conduct_particle = sigmaP(sigmaPcore, K_s, r2)
 
 epsilonL = epsilonL_60 
-f = 10**7
+"""f = 10**7
 w = 2*pi*f #changeable from 10^2 to 10^10
 epsilonStarL = epsilonStar(epsilonL_60,sigmaL_60, w)
 
 epsilonStarP = epsilonStar(epsilonL_60,sigmaL_60, w)
 epsilonStarM = epsilonStar(epsilon_m,sigma_m, w)
-k_w = k_w(epsilonStarM, epsilonStarP)
+kw = k_w(epsilonStarM, epsilonStarP)
 
 #effective permittivity for the equivalent particle
 effective_conductivity = epsilonStarPEff(r2, r1, epsilonStarL, k_w)
 
-Re_k_w = k_w.real
+Re_k_w = kw.real
 
 vis = 8.9*(10**(-4)) #deionized water
 
-mobility_DEP = miuDEP(r2, epsilon_m, Re_k_w, vis)
+mobility_DEP = miuDEP(r2, epsilon_m, Re_k_w, vis)"""
 
 
 
 x = []
-y = []
-for f in range(1,10):
+y1 = []
+y2 = []
+for f in np.arange(0,20,0.2):
     freq = 10**f
     w = 2*pi*freq #changeable from 10^2 to 10^10
-    epsilonStarL = epsilonStar(epsilonL_60, sigmaL_60, w)
 
-    epsilonStarP = epsilonStar(epsilonL_60, sigmaL_60, w)
+    #for 30nm
+    epsilonStarL_30 = epsilonStar(epsilonL_30, sigmaL_30, w)
+    epsilonStarP_30 = epsilonStar(epsilonL_30, sigmaL_30, w)
+
+    #for 60nm
+    epsilonStarL_60 = epsilonStar(epsilonL_60, sigmaL_60, w)
+    epsilonStarP_60 = epsilonStar(epsilonL_60, sigmaL_60, w)
+
     epsilonStarM = epsilonStar(epsilon_m, sigma_m, w)
-    k_w = k_w(epsilonStarM, epsilonStarP)
 
-    #effective permittivity for the equivalent particle
-    effective_conductivity = epsilonStarPEff(r2, r1, epsilonStarL, k_w)
+    kw_30 = k_w(epsilonStarM, epsilonStarP_30)
+    kw_60 = k_w(epsilonStarM, epsilonStarP_60)
 
-    E = 195 #E = applied voltage (vary between a range of 5 to 200) 
-    #E_rms = E/(2**0.5)
-    Re_k_w = k_w.real
-    E_rms = E/(2**0.5)
-    v = slip_velocity(r2, vis, epsilon_m, Re_k_w, E_rms)
-    DEP_force = F_DEP(vis, r2, v)
+    Re_k_w_30 = kw_30.real
+    Re_k_w_60 = kw_60.real
+
     x.append(f)
-    y.append(DEP_force)
+    y1.append(Re_k_w_60)
+    y2.append(Re_k_w_30)
 
-
+"""
 print(f"Particle Size = {particle_size} nm")
 print(f"Temperature = {temp} K")
 print(f"Zeta potential = {phiNote} V")
@@ -207,25 +213,25 @@ print(f"Effective Permittivity = {effective_conductivity} S/m")
 print(f"Applied voltage difference = {E} V")
 print(f"Velocity difference between the particles and the fluid = {v} m/s")
 print(f"Dielectrophoresis force applied on the particle = {DEP_force} N")
-
+"""
 #-------------------------------------------------------------------------------
 
 
 
 #graphical representation
-import matplotlib.pyplot as plt
-import numpy as np
 
-mymodel = np.poly1d(np.polyfit(x, y, 3))
+#mymodel = np.poly1d(np.polyfit(x, y, 2))
 
-myline = np.linspace(40, 160, 100)
+#myline = np.linspace(0, 20, 100)
 
-plt.scatter(x,y)
+plt.plot(x,y1)
+plt.plot(x,y2)
+
 plt.xlabel("Frequency (f)")
-plt.ylabel("DEP Force (N)")
-plt.title("Applied Voltage Vs. DEP Force")
+plt.ylabel("Real Part of CM factor")
+plt.title("Frequency Vs. Re[K(w)]")
 
-plt.plot(myline, mymodel(myline))
+#plt.plot(myline, mymodel(myline))
 
 plt.show()
 
